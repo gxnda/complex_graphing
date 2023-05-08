@@ -1,36 +1,47 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from cmath import sqrt, asin, sin
+from abc import ABC, ABCMeta
+from math import floor, ceil, pi
 
 
-# Define the function f(x)
-def f(x):
-    return asin(x)
+def all_asin(num: float, min_real: float=-10, max_real: float=10) -> complex:
+    """NOT WORKING: Returns multiple values instead of just 1 because cmath.asin() bad"""
+
+    first_asin = asin(num)
+    first_re = first_asin.real
+    first_im = first_asin.imag
+
+    smallest_n = floor(min_real/(2*pi))
+    largest_n = ceil(max_real/(2*pi))
+    all_re = [first_re + 2*pi*n for n in range(smallest_n, largest_n)]
+
+    all_results = [complex(re, first_im) for re in all_re]
+    return all_results[0]
 
 
-def neg_f(x):
-    return -1 * f(x)
+class Graph(ABC, metaclass=ABCMeta):
+    def __init__(self, function, x_range_from: float=2, x_range_to: float=-2):
+        super().__init__()
+        self.vec_function = np.vectorize(function)
+        self.x = np.linspace(x_range_from, x_range_to, 10000)
+        self.y = np.real(self.vec_function(self.x))
+        self.z = np.imag(self.vec_function(self.x))
+
+    def plot(self):
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        ax.set_xlabel('Re(x)')
+        ax.set_ylabel('y')
+        ax.set_zlabel('Im(x)')
+        ax.plot(self.y, self.x, self.z, color="blue")
+
+    @staticmethod
+    def show():
+        plt.show()
 
 
-# Create a vectorized version of f(x) for array inputs
-
-f_vec = np.vectorize(f)
-x = np.linspace(-2, 2, 10000)
-y = np.real(f_vec(x))
-z = np.imag(f_vec(x))
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-ax.plot(y, x, z, color="blue")
-
-# Negative side of the function, ONLY USING THIS FOR + OR - FUNCTIONS (eg x = +-sqrt(y))
-"""
-f2_vec = np.vectorize(neg_f)
-y = np.real(f2_vec(x))
-z = np.imag(f2_vec(x))
-ax.plot(y, x, z, color="blue")
-"""
-
-ax.set_xlabel('Re(x)')
-ax.set_ylabel('y')
-ax.set_zlabel('Im(x)')
-plt.show()
+if __name__ == "__main__":
+    sin_graph = Graph(function=asin)
+    sin_graph.plot()
+    sin_graph.show()
