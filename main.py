@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from cmath import *
 from abc import ABC, ABCMeta
-import tkinter as tk
 
 
 def complex_linspace(from_re: int, to_re: int, from_im: int, to_im: int, step=0.1) -> np.array:
@@ -45,26 +44,23 @@ class Graph:
         self.y = np.real(linspace)
         self.z = np.imag(linspace)
 
-    def plot(self):
+    def plot(self, y_lim_neg=-10, y_lim_pos=10):
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         ax.set_xlabel('Re(x)')
         ax.set_ylabel('y')
         ax.set_zlabel('Im(x)')
-        ax.scatter(self.y, self.x, self.z, color="blue")
+        ax.scatter(self.y, self.x.real, self.z, c=self.x.imag, cmap='viridis')
+        ax.set_ylim(y_lim_neg, y_lim_pos)
 
-    @staticmethod
-    def show():
+
+    def show(self):
+        print(f"Re(x): {self.y}\n\ny: {self.x}\n\nIm(x): {self.z}")
         plt.show()
 
 
-class GUI(ABC, tk):
-    def __init__(self):
-        super().__init__()
-        pass
-
 
 if __name__ == "__main__":
-    graph = Graph(function=lambda x: x**3, re_min=-10, re_max=10, im_min=-10, im_max=10, resolution=2)
+    graph = Graph(function=tan, re_min=-10, re_max=10, im_min=-1, im_max=1, resolution=30)
     graph.plot()
     graph.show()
