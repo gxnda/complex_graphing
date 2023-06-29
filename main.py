@@ -22,15 +22,14 @@ class Graph(object):
 
         self.y = vec_function(nums)
 
-
     def plot(self, y_min=-10, y_max=10):
         fig = plt.figure()
         ax = fig.add_subplot(111, projection="3d")
         ax.set_xlabel('Re(x)')
         ax.set_ylabel('y')
         ax.set_zlabel('Im(x)')
-
         indices = np.where(abs(self.y.imag) < 0.1)
+
         print(self.y[indices])
         ax.scatter(self.x.real[indices],self.y[indices], self.z[indices], c=self.z[indices], cmap="viridis")
 
@@ -50,7 +49,17 @@ def sin_plot():
     graph.plot()
     graph.show()
 
+def sqrt_plot():
+    graph = Graph(sqrt, re_min=-15, re_max=15, im_min=-15, im_max=15, resolution=20)
+    graph.plot()
+    graph.show()
+
+
+
 if __name__ == "__main__":
-    sin_plot()
+    graph = Graph(, re_min=-15, re_max=15, im_min=-15, im_max=15, resolution=100)
+    graph.plot()
+    graph.show()
+
 
 
